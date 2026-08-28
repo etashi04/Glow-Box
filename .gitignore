@@ -1,0 +1,19 @@
+# Game files and copyrighted source assets
+/work/
+/backup/
+/extracted/
+
+# Generated and intermediate patch artifacts
+/analysis/
+
+# Third-party tools and downloaded archives
+/tools/
+
+# Local/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.tmp
+*.bak
+
