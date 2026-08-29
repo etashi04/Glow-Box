@@ -13,8 +13,7 @@
 
 배포 패키지는 `release/GlowBox_Korean_Patch_v1.0.0.zip`으로 생성한다.
 
-- `install.cmd`: Steam 설치 폴더 자동 탐색, 원본 해시 확인, 백업 후 설치
-- `uninstall.cmd`: 설치 시 만든 백업으로 원본 복구
-- `payload/`: 암호화·압축된 한국어 패치 번들 5개
+- `GlowBox_Korean_Patch_v1.0.0.exe`: Steam 설치 폴더 자동 탐색, 원본 해시 확인, 백업·설치·복구를 제공하는 단일 실행 파일
+- `README.txt`: 사용자용 설치 안내
 
-배포 전에는 임시 Steam 원본 사본에서 설치 및 제거 후 SHA-256 왕복 일치를 확인한다.
+배포 전에는 임시 Steam 원본 사본에서 EXE 설치 및 복구 후 SHA-256 왕복 일치를 확인한다.
