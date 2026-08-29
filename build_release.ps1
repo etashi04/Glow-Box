@@ -22,7 +22,8 @@ New-Item -ItemType Directory -Force -Path $packageDir | Out-Null
 $readmeTemplate = Get-Content -LiteralPath (Join-Path $ProjectRoot 'distribution\README.txt') -Raw
 [IO.File]::WriteAllText((Join-Path $packageDir 'README.txt'), $readmeTemplate.Replace('__PATCH_VERSION__', $version), [Text.UTF8Encoding]::new($true))
 $manualPackageDir = Join-Path $releaseDir "GlowBox_Korean_Patch_Manual_v$version"
-$manualPatchDir = Join-Path $manualPackageDir 'patch'
+$manualPatchDir = Join-Path $manualPackageDir 'Glow Box_Data\StreamingAssets\aa\StandaloneWindows64'
+if (Test-Path -LiteralPath $manualPackageDir) { Remove-Item -LiteralPath $manualPackageDir -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $manualPatchDir | Out-Null
 foreach ($bundle in $manifest.bundles) { Copy-Item -LiteralPath (Join-Path $payloadDir $bundle.name) -Destination (Join-Path $manualPatchDir $bundle.name) -Force }
 $manualReadme = Get-Content -LiteralPath (Join-Path $ProjectRoot 'distribution\README_manual.txt') -Raw

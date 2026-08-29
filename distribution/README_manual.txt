@@ -5,10 +5,10 @@ Glow Box 비공식 한국어 패치 v__PATCH_VERSION__ - 수동 설치판
 [설치]
 1. Glow Box와 Steam을 종료합니다.
 2. Steam 라이브러리에서 Glow Box를 우클릭하고 [관리] → [로컬 파일 탐색]을 누릅니다.
-3. 열린 GlowMachine 폴더에서 아래 경로로 이동합니다.
-   Glow Box_Data\StreamingAssets\aa\StandaloneWindows64
+3. 열린 게임 설치 폴더에 기존 `Glow Box_Data` 폴더가 보이는지 확인합니다.
 4. 원본 복구를 위해 아래 대상 파일 5개를 별도 폴더에 백업합니다.
-5. 이 ZIP의 patch 폴더 안에 있는 파일 5개를 위 경로에 덮어씁니다.
+   원본 위치: Glow Box_Data\StreamingAssets\aa\StandaloneWindows64
+5. 이 ZIP의 `Glow Box_Data` 폴더를 게임 설치 폴더에 그대로 복사하여 폴더 병합과 파일 덮어쓰기를 승인합니다.
 6. 게임을 실행하고 언어 설정에서 한국어를 선택합니다.
 
 [대상 파일]
