@@ -1,26 +1,32 @@
 param(
     [Parameter(Mandatory=$true)][string]$PayloadDir,
-    [Parameter(Mandatory=$true)][string]$OutputPath
+    [Parameter(Mandatory=$true)][string]$OutputPath,
+    [Parameter(Mandatory=$true)][string]$ManifestPath
 )
 $ErrorActionPreference = 'Stop'
 $csc = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
 if (-not (Test-Path -LiteralPath $csc)) { throw 'Windows C# compiler was not found.' }
-$source = Join-Path $PSScriptRoot 'GlowBoxKoreanPatchInstaller.cs'
-$names = @(
-    '11ee4a0ca6d5e27a4192b31f12d7b10a.bundle',
-    '4acc258f619ac06b664ed91b69b7f2a1.bundle',
-    '7bd755be8ba5171f40812b455a8a4ff1.bundle',
-    'a83647f242c8e97a23ee6bcd801cb623.bundle',
-    'b79bff27dd04232ee4d7bc9d1c2236b8.bundle'
-)
+$manifest = Get-Content -LiteralPath $ManifestPath -Raw | ConvertFrom-Json
+$names = @($manifest.bundles | ForEach-Object { $_.name })
+if (-not $manifest.patchVersion -or -not $manifest.gameBuild -or $names.Count -eq 0) { throw 'Invalid release manifest.' }
+$escape = { param($value) ([string]$value).Replace('\','\\').Replace('"','\"') }
+$arrayLines = $names | ForEach-Object { '        "' + (& $escape $_) + '"' }
+$hashLines = $manifest.bundles | ForEach-Object { '        { "' + (& $escape $_.name) + '", "' + $_.originalSha256 + '" }' }
+$configuration = "private static readonly string[] BundleNames = {`r`n" + ($arrayLines -join ",`r`n") + "`r`n    };`r`n    private static readonly Dictionary<string, string> OriginalHashes = new Dictionary<string, string> {`r`n" + ($hashLines -join ",`r`n") + "`r`n    };"
+$template = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'GlowBoxKoreanPatchInstaller.cs') -Raw
+$generatedSource = $template.Replace('__PATCH_VERSION__', (& $escape $manifest.patchVersion)).Replace('__GAME_BUILD__', (& $escape $manifest.gameBuild)).Replace('__BUNDLE_CONFIGURATION__', $configuration)
+$source = Join-Path ([IO.Path]::GetTempPath()) ("GlowBoxInstaller_" + [guid]::NewGuid().ToString('N') + '.cs')
+[IO.File]::WriteAllText($source, $generatedSource, [Text.UTF8Encoding]::new($false))
 $resourceArgs = foreach ($name in $names) {
     $path = Join-Path $PayloadDir $name
     if (-not (Test-Path -LiteralPath $path)) { throw "Missing payload: $name" }
     "/resource:$path,GlowBox.Payload.$name"
 }
 New-Item -ItemType Directory -Force -Path (Split-Path -Parent $OutputPath) | Out-Null
-& $csc /nologo /target:winexe /platform:x64 /optimize+ `
-    /reference:System.dll /reference:System.Core.dll /reference:System.Drawing.dll `
-    /reference:System.Windows.Forms.dll /out:$OutputPath $source $resourceArgs
-if ($LASTEXITCODE -ne 0) { throw "Compiler failed with exit code $LASTEXITCODE" }
+try {
+    & $csc /nologo /target:winexe /platform:x64 /optimize+ `
+        /reference:System.dll /reference:System.Core.dll /reference:System.Drawing.dll `
+        /reference:System.Windows.Forms.dll /out:$OutputPath $source $resourceArgs
+    if ($LASTEXITCODE -ne 0) { throw "Compiler failed with exit code $LASTEXITCODE" }
+} finally { Remove-Item -LiteralPath $source -Force -ErrorAction SilentlyContinue }
 Write-Output "Built: $OutputPath"

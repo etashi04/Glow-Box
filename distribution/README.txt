@@ -1,8 +1,8 @@
-Glow Box 비공식 한국어 패치 v1.0.0
+Glow Box 비공식 한국어 패치 v__PATCH_VERSION__
 
 사용 방법
 1. Glow Box를 종료합니다.
-2. GlowBox_Korean_Patch_v1.0.0.exe를 실행합니다.
+2. GlowBox_Korean_Patch_v__PATCH_VERSION__.exe를 실행합니다.
 3. 설치 폴더를 확인하고 [한국어 패치 설치]를 누릅니다.
 4. 게임을 실행하고 언어에서 한국어를 선택합니다.
 

@@ -12,21 +12,9 @@ using Microsoft.Win32;
 
 internal static class Program
 {
-    private const string Version = "1.0.0";
-    private static readonly string[] BundleNames = {
-        "11ee4a0ca6d5e27a4192b31f12d7b10a.bundle",
-        "4acc258f619ac06b664ed91b69b7f2a1.bundle",
-        "7bd755be8ba5171f40812b455a8a4ff1.bundle",
-        "a83647f242c8e97a23ee6bcd801cb623.bundle",
-        "b79bff27dd04232ee4d7bc9d1c2236b8.bundle"
-    };
-    private static readonly Dictionary<string, string> OriginalHashes = new Dictionary<string, string> {
-        { BundleNames[0], "7AE36FD537ACBFFFA9D20A8D1C439982D0C7806696E8468F681AB3ED67E5CEE2" },
-        { BundleNames[1], "6DBCE59D4C90FB3D3A6704FC877EFACA77D36A7AAAAACE165945DABF8A07F48D" },
-        { BundleNames[2], "6EC3D3DB085064A4D1D97B0B375B475966F90668F3068DEB1EDE8FB192E6B3AE" },
-        { BundleNames[3], "4633E027E17F0B4AB44EFEDF717736C78256C5FD4E1846567267BC5A48F3C2E6" },
-        { BundleNames[4], "74D5C1A1C6D22E3DB89F227A1B30561A5CA492C9F354A8F743741C12844D5F77" }
-    };
+    private const string Version = "__PATCH_VERSION__";
+    private const string GameBuild = "__GAME_BUILD__";
+    __BUNDLE_CONFIGURATION__
 
     [STAThread]
     private static void Main(string[] args)
@@ -61,7 +49,7 @@ internal static class Program
             Font = new Font("Malgun Gothic", 9F);
 
             var title = new Label { Text = "Glow Box 비공식 한국어 패치", Font = new Font(Font.FontFamily, 16F, FontStyle.Bold), AutoSize = true, Location = new Point(24, 20) };
-            var note = new Label { Text = "게임을 종료한 뒤 설치하세요. 원본 파일은 자동으로 백업됩니다.", AutoSize = true, Location = new Point(27, 58) };
+            var note = new Label { Text = "지원 게임: " + GameBuild + " · 원본 파일은 자동 백업됩니다.", AutoSize = true, Location = new Point(27, 58) };
             var pathLabel = new Label { Text = "게임 설치 폴더", AutoSize = true, Location = new Point(27, 92) };
             pathBox.Location = new Point(27, 114); pathBox.Size = new Size(475, 25);
             var browse = new Button { Text = "찾아보기", Location = new Point(510, 112), Size = new Size(84, 29) };
