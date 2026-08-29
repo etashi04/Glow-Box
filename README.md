@@ -29,7 +29,7 @@ Windows에서 알 수 없는 앱 경고가 표시될 수 있습니다. 배포 �
 
 현재 패치 버전은 `VERSION`에서 관리합니다. 사용자에게는 빌드 후 생성되는 `GlowBox_Korean_Patch_v버전.zip` 하나만 배포하면 됩니다.
 
-- `GlowBox_Korean_Patch_v1.0.0.exe`: Steam 설치 폴더 자동 탐색, 원본 해시 확인, 백업·설치·복구를 제공하는 단일 실행 파일
+- `GlowBox_Korean_Patch_v버전.exe`: Steam 설치 폴더 자동 탐색, 원본 해시 확인, 백업·설치·복구를 제공하는 단일 실행 파일
 - `README.txt`: 사용자용 설치 안내
 
 사용자는 ZIP을 푼 뒤 EXE를 실행하여 한국어 패치를 설치하거나 원본을 복구할 수 있습니다.

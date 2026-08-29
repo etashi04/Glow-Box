@@ -24,7 +24,10 @@ internal static class Program
                 string root = InstallerForm.ValidateRoot(args[1]);
                 if (args[0] == "--install") InstallerForm.Install(root); else InstallerForm.Restore(root);
                 Environment.ExitCode = 0;
-            } catch { Environment.ExitCode = 1; }
+            } catch (Exception ex) {
+                try { File.WriteAllText(Path.Combine(args[1], "KoreanPatch_CLI_Error.txt"), ex.ToString(), Encoding.UTF8); } catch { }
+                Environment.ExitCode = 1;
+            }
             return;
         }
         Application.EnableVisualStyles();
@@ -100,24 +103,56 @@ internal static class Program
         {
             string target = Path.Combine(root, "Glow Box_Data", "StreamingAssets", "aa", "StandaloneWindows64");
             string backup = Path.Combine(root, "KoreanPatch_Backup");
-            Directory.CreateDirectory(backup);
+            string staging = Path.Combine(Path.GetTempPath(), "GlowBoxPatch_" + Guid.NewGuid().ToString("N"));
+            string rollback = Path.Combine(staging, "rollback");
+
+            // Validate every file before changing the game directory.
             foreach (string name in BundleNames) {
                 string destination = Path.Combine(target, name);
                 string backupFile = Path.Combine(backup, name);
                 if (!File.Exists(destination)) throw new FileNotFoundException("게임 파일 누락: " + name);
-                if (!File.Exists(backupFile)) {
-                    if (!String.Equals(Hash(destination), OriginalHashes[name], StringComparison.OrdinalIgnoreCase))
-                        throw new InvalidDataException("지원하지 않는 게임 버전 또는 수정된 파일입니다: " + name);
-                    File.Copy(destination, backupFile, false);
+                string currentHash = Hash(destination);
+                if (File.Exists(backupFile)) {
+                    if (!SameHash(Hash(backupFile), OriginalHashes[name]))
+                        throw new InvalidDataException("기존 백업이 손상되었거나 다른 게임 버전입니다: " + name);
+                    if (!SameHash(currentHash, OriginalHashes[name]) && !SameHash(currentHash, PatchedHashes[name]))
+                        throw new InvalidDataException("패치 후 게임이 업데이트되었거나 파일이 수정되었습니다: " + name);
+                } else if (!SameHash(currentHash, OriginalHashes[name])) {
+                    throw new InvalidDataException("지원하지 않는 게임 버전 또는 수정된 파일입니다: " + name);
                 }
-                string temp = destination + ".tmp";
-                using (Stream input = Assembly.GetExecutingAssembly().GetManifestResourceStream("GlowBox.Payload." + name)) {
-                    if (input == null) throw new InvalidDataException("내장 패치 파일 누락: " + name);
-                    using (FileStream output = File.Create(temp)) input.CopyTo(output);
+            }
+
+            Directory.CreateDirectory(backup);
+            Directory.CreateDirectory(rollback);
+            try {
+                foreach (string name in BundleNames) {
+                    string destination = Path.Combine(target, name);
+                    string backupFile = Path.Combine(backup, name);
+                    if (!File.Exists(backupFile)) File.Copy(destination, backupFile, false);
+                    File.Copy(destination, Path.Combine(rollback, name), true);
+                    string staged = Path.Combine(staging, name);
+                    WritePayload(name, staged);
+                    if (!SameHash(Hash(staged), PatchedHashes[name])) throw new InvalidDataException("내장 패치 파일 검증 실패: " + name);
                 }
-                File.Copy(temp, destination, true); File.Delete(temp);
+                foreach (string name in BundleNames) File.Copy(Path.Combine(staging, name), Path.Combine(target, name), true);
+            } catch {
+                foreach (string name in BundleNames) {
+                    string saved = Path.Combine(rollback, name);
+                    if (File.Exists(saved)) File.Copy(saved, Path.Combine(target, name), true);
+                }
+                throw;
+            } finally {
+                if (Directory.Exists(staging)) Directory.Delete(staging, true);
             }
             File.WriteAllText(Path.Combine(root, "KoreanPatch.json"), "{\"version\":\"" + Version + "\",\"installedAt\":\"" + DateTime.Now.ToString("o") + "\"}", Encoding.UTF8);
+        }
+
+        private static void WritePayload(string name, string destination)
+        {
+                using (Stream input = Assembly.GetExecutingAssembly().GetManifestResourceStream("GlowBox.Payload." + name)) {
+                    if (input == null) throw new InvalidDataException("내장 패치 파일 누락: " + name);
+                using (FileStream output = File.Create(destination)) input.CopyTo(output);
+                }
         }
 
         internal static void Restore(string root)
@@ -128,9 +163,26 @@ internal static class Program
             foreach (string name in BundleNames) {
                 string source = Path.Combine(backup, name);
                 if (!File.Exists(source)) throw new FileNotFoundException("백업 파일 누락: " + name);
-                File.Copy(source, Path.Combine(target, name), true);
+                if (!SameHash(Hash(source), OriginalHashes[name])) throw new InvalidDataException("복구용 백업이 손상되었거나 다른 게임 버전입니다: " + name);
             }
+            string rollback = Path.Combine(Path.GetTempPath(), "GlowBoxRestore_" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(rollback);
+            try {
+                foreach (string name in BundleNames) File.Copy(Path.Combine(target, name), Path.Combine(rollback, name), true);
+                foreach (string name in BundleNames) File.Copy(Path.Combine(backup, name), Path.Combine(target, name), true);
+            } catch {
+                foreach (string name in BundleNames) {
+                    string saved = Path.Combine(rollback, name);
+                    if (File.Exists(saved)) File.Copy(saved, Path.Combine(target, name), true);
+                }
+                throw;
+            } finally { if (Directory.Exists(rollback)) Directory.Delete(rollback, true); }
             string marker = Path.Combine(root, "KoreanPatch.json"); if (File.Exists(marker)) File.Delete(marker);
+        }
+
+        private static bool SameHash(string left, string right)
+        {
+            return String.Equals(left, right, StringComparison.OrdinalIgnoreCase);
         }
 
         private static string Hash(string path)
