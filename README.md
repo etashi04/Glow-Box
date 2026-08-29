@@ -2,6 +2,21 @@
 
 게임 **Glow Box**의 비공식 한국어 패치 저장소입니다.
 
+## 설치 방법
+
+1. [최신 릴리즈](https://github.com/etashi04/Glow-Box/releases/latest)에서 `GlowBox_Korean_Patch_v버전.zip`을 다운로드합니다.
+2. 다운로드한 ZIP의 압축을 풉니다.
+3. Glow Box를 완전히 종료합니다.
+4. 압축을 푼 폴더의 `GlowBox_Korean_Patch_v버전.exe`를 실행합니다.
+5. 자동으로 표시된 게임 설치 폴더를 확인하고 **한국어 패치 설치**를 누릅니다. 경로를 찾지 못하면 Steam의 `GlowMachine` 폴더를 직접 선택합니다.
+6. 게임을 실행하고 언어 설정에서 한국어를 선택합니다.
+
+원본 상태로 되돌리려면 같은 EXE를 다시 실행하고 **원본 복구**를 누릅니다. 설치할 때 생성된 `KoreanPatch_Backup` 폴더는 복구 전까지 삭제하지 마세요.
+
+Windows에서 알 수 없는 앱 경고가 표시될 수 있습니다. 배포 파일은 릴리즈에 함께 제공되는 `SHA256SUMS.txt`로 무결성을 확인할 수 있습니다.
+
+## 저장소 구성
+
 - 번역 데이터: `translations/`
 - 패치·검증 스크립트: `scripts/`
 - 원본 파일 해시: `metadata/original_sha256.csv`
