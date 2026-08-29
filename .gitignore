@@ -8,6 +8,7 @@
 
 # Third-party tools and downloaded archives
 /tools/
+/release/
 
 # Local/editor noise
 .DS_Store
@@ -16,4 +17,3 @@ desktop.ini
 *.log
 *.tmp
 *.bak
-

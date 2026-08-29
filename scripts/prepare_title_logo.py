@@ -6,7 +6,7 @@ sys.path.insert(0, str(ROOT / "tools" / "python_packages"))
 
 from PIL import Image, ImageDraw, ImageFont
 
-TITLE = "그저 빛날 뿐인 기계"
+TITLE = "빛나는 상자"
 WIDTH, HEIGHT = 512, 32
 
 
@@ -19,8 +19,9 @@ def main():
     bbox = draw.textbbox((0, 0), TITLE, font=font)
     text_width = bbox[2] - bbox[0]
     text_height = bbox[3] - bbox[1]
-    # Match the Japanese source logo's left edge (its non-transparent bbox
-    # begins at x=78 in the 512-pixel texture).
+    # Match the title menu's established left edge. The sprite is reused in
+    # multiple scenes, and centering inside the texture shifts it away from
+    # the left-aligned menu items.
     x = 78 - bbox[0]
     y = (HEIGHT - text_height) // 2 - bbox[1]
     draw.text((x, y), TITLE, font=font, fill=1)
