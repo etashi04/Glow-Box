@@ -21,6 +21,12 @@ New-Item -ItemType Directory -Force -Path $packageDir | Out-Null
 & (Join-Path $ProjectRoot 'distribution\build_installer.ps1') -PayloadDir $payloadDir -OutputPath $exe -ManifestPath $manifestPath
 $readmeTemplate = Get-Content -LiteralPath (Join-Path $ProjectRoot 'distribution\README.txt') -Raw
 [IO.File]::WriteAllText((Join-Path $packageDir 'README.txt'), $readmeTemplate.Replace('__PATCH_VERSION__', $version), [Text.UTF8Encoding]::new($true))
+$manualPackageDir = Join-Path $releaseDir "GlowBox_Korean_Patch_Manual_v$version"
+$manualPatchDir = Join-Path $manualPackageDir 'patch'
+New-Item -ItemType Directory -Force -Path $manualPatchDir | Out-Null
+foreach ($bundle in $manifest.bundles) { Copy-Item -LiteralPath (Join-Path $payloadDir $bundle.name) -Destination (Join-Path $manualPatchDir $bundle.name) -Force }
+$manualReadme = Get-Content -LiteralPath (Join-Path $ProjectRoot 'distribution\README_manual.txt') -Raw
+[IO.File]::WriteAllText((Join-Path $manualPackageDir 'README.txt'), $manualReadme.Replace('__PATCH_VERSION__', $version), [Text.UTF8Encoding]::new($true))
 
 if (-not $TestGamePath) { $TestGamePath = Join-Path $ProjectRoot 'analysis\distribution_install_test_20260830\GlowMachine' }
 if (-not (Test-Path -LiteralPath (Join-Path $TestGamePath 'Glow Box.exe'))) { throw "Test game not found: $TestGamePath" }
@@ -67,8 +73,13 @@ foreach ($bundle in $manifest.bundles) {
 }
 $zip = Join-Path $releaseDir "GlowBox_Korean_Patch_v$version.zip"
 Compress-Archive -Path "$packageDir\*" -DestinationPath $zip -CompressionLevel Optimal -Force
+$manualZip = Join-Path $releaseDir "GlowBox_Korean_Patch_Manual_v$version.zip"
+Compress-Archive -Path "$manualPackageDir\*" -DestinationPath $manualZip -CompressionLevel Optimal -Force
 $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $zip).Hash
-[IO.File]::WriteAllText((Join-Path $releaseDir 'SHA256SUMS.txt'), "$hash  $(Split-Path $zip -Leaf)`r`n", [Text.UTF8Encoding]::new($false))
+$manualHash = (Get-FileHash -Algorithm SHA256 -LiteralPath $manualZip).Hash
+[IO.File]::WriteAllText((Join-Path $releaseDir 'SHA256SUMS.txt'), "$hash  $(Split-Path $zip -Leaf)`r`n$manualHash  $(Split-Path $manualZip -Leaf)`r`n", [Text.UTF8Encoding]::new($false))
 Write-Output "Release v$version complete"
 Write-Output "ZIP: $zip"
+Write-Output "Manual ZIP: $manualZip"
 Write-Output "SHA-256: $hash"
+Write-Output "Manual SHA-256: $manualHash"
