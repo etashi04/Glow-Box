@@ -22,6 +22,12 @@
 /08_빌드_의존성/
 /09_사용자_세이브백업/
 
+# Private local workflow documents
+/작업_인계서.md
+/작업물_안내.md
+/다음_버전_착수_가이드.md
+/형상_관리_보고서.md
+
 # Local/editor noise
 .DS_Store
 Thumbs.db
