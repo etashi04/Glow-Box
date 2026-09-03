@@ -6,7 +6,7 @@ sys.path.insert(0, str(ROOT / "tools" / "python_packages"))
 
 from PIL import Image, ImageDraw, ImageFont
 
-TITLE = "빛나는 상자"
+TITLE = "빛날 뿐인 기계"
 WIDTH, HEIGHT = 512, 32
 
 

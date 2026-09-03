@@ -10,6 +10,18 @@
 /tools/
 /release/
 
+# OneDrive completion archive (organized local copies)
+/00_프로젝트_문서/
+/01_번역자료/
+/02_런타임_패치/
+/03_소스코드/
+/04_QA_자료/
+/05_노트북_즉시설치/
+/06_형상관리_저장소/
+/07_배포본/
+/08_빌드_의존성/
+/09_사용자_세이브백업/
+
 # Local/editor noise
 .DS_Store
 Thumbs.db
