@@ -3,6 +3,8 @@
 Steam판 **Glow Box** 비공식 한국어 패치 저장소입니다.
 
 현재 정식 배포 버전은 `v1.0.2`이며 Steam 2026-08-30 빌드에서 확인했습니다.
+<img width="850" height="478" alt="image" src="https://github.com/user-attachments/assets/2678d919-3fe1-40e4-9076-085201100ce1" />
+<img width="850" height="478" alt="image" src="https://github.com/user-attachments/assets/e0fb3990-a0a2-4e96-9b19-1f7f39678212" />
 
 ## 저장소 구성
 
