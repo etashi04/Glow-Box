@@ -3,30 +3,10 @@
 Steam판 **Glow Box** 비공식 한국어 패치 저장소입니다.
 
 현재 정식 배포 버전은 `v1.0.2`이며 Steam 2026-08-30 빌드에서 확인했습니다.
+
+
 <img width="850" height="478" alt="image" src="https://github.com/user-attachments/assets/2678d919-3fe1-40e4-9076-085201100ce1" />
 <img width="850" height="478" alt="image" src="https://github.com/user-attachments/assets/e0fb3990-a0a2-4e96-9b19-1f7f39678212" />
-
-## 저장소 구성
-
-- `translations/`: 번역 데이터
-- `scripts/`: 패치·검증 스크립트
-- `metadata/original_sha256.csv`: 원본 파일 해시
-- `distribution/`, `build_release.ps1`: 설치기 소스와 빌드 도구
-- `versions/`: 버전별 지원 정보
-- `VERSION`: 현재 패치 버전
-- `CHANGELOG.md`: 변경 사항
-
-<details>
-<summary>새 버전 배포</summary>
-
-1. `VERSION`을 새 버전으로 변경합니다.
-2. `versions/새버전/manifest.json`을 만들고 지원 게임 빌드, 원본·패치 번들 해시 및 패치 번들 경로를 기록합니다.
-3. `CHANGELOG.md`에 변경 사항을 추가합니다.
-4. 루트에서 `./build_release.ps1`을 실행합니다.
-
-스크립트는 EXE 컴파일, 번들 내장, 임시 게임 사본 설치·복구 검증, EXE 설치판과 수동 설치판 ZIP 압축, `SHA256SUMS.txt` 생성을 한 번에 수행합니다. 버전 또는 해시 검증에 실패하면 배포를 중단합니다.
-
-</details>
 
 ## 배포본
 
@@ -37,13 +17,6 @@ Steam판 **Glow Box** 비공식 한국어 패치 저장소입니다.
 - `SHA256SUMS.txt`: 배포 ZIP 무결성 확인용 체크섬
 
 게임을 종료한 상태에서 설치하세요. 자동판 ZIP을 풀면 설치 EXE와 사용자용 설치 안내문을 확인할 수 있습니다.
-
-## 확인된 범위
-
-- 전체 시나리오 및 시스템 문구 한국어 출력
-- 한국어 폰트 아틀라스와 제목 로고 적용
-- 문장부호·오역·정렬 및 엔딩 크레딧 수정
-- 게임 창 및 메인 화면의 한국어 제목 **빛날 뿐인 기계** 적용
 
 ## 자동 설치
 
